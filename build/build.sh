@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
-CHANGES=$(git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master))
+if [ "$TRAVIS_PULL_REQUEST" == "false" ]
+  then
+    CHANGES=$(git diff --name-only HEAD HEAD~1)
+  else
+    CHANGES=$(git diff --name-only HEAD $(git merge-base HEAD $TRAVIS_BRANCH))
+fi
 docker login --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD"
 if [ "$2" == "client" ] && [ -n "$(grep '^client' <<< "$CHANGES")" ]
   then
