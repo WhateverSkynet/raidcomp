@@ -12,4 +12,4 @@ env:
   - BUILD_TARGET=client
   - BUILD_TARGET=server
 script:
-  - build/build.sh production $BUILD_TARGET
+  - bash build/build.sh production $BUILD_TARGET

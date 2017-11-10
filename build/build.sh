@@ -1,4 +1,4 @@
-
+#!/usr/bin/env sh
 CHANGES=$(git --no-pager diff --name-only FETCH_HEAD $(git merge-base FETCH_HEAD master))
 docker login --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD"
 if [ "$2" == "client" ] && [ -n "$(grep '^client' <<< "$CHANGES")" ]
