@@ -26,7 +26,6 @@ if [ "$2" == "server" ] #&& [ -n "$(grep '^server' <<< "$CHANGES")" ] || [ -n "$
     echo "building server"
     cd server
     yarn install
-    yarn build
     yarn test
     if [ "$TRAVIS_BRANCH" == "master" ]
       then
