@@ -6,16 +6,13 @@ module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient')
   const { Schema } = mongooseClient
   const guild = new Schema({
-    n: { type: String, required: true, alias: 'name' },
-    r: { type: String, required: true, alias: 'realm' },
-    d: { type: String, required: true, alias: 'region' },
-    m: { type: [String], alias: 'members' },
-    p: { type: [String], alias: 'rankNames' }
+    name: { type: String, required: true },
+    realm: { type: String, required: true },
+    region: { type: String, required: true },
+    members: { type: [String] },
+    rankNames: { type: [String], default: [] }
   }, {
-    timestamps: {
-      createdAt: 'ca',
-      updatedAt: 'ua'
-    }
+    timestamps: true
   })
 
   return mongooseClient.model('guild', guild)

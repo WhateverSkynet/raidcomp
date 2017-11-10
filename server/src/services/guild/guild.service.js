@@ -8,18 +8,21 @@ module.exports = function () {
   const app = this
   const Model = createModel(app)
   const paginate = app.get('paginate')
+  const prefix = app.get('prefix')
+  const servicePath = prefix + '/guild'
 
   const options = {
     name: 'guild',
     Model,
-    paginate
+    paginate,
+    overwrite: false
   }
 
   // Initialize our service with any options it requires
-  app.use('/guild', createService(options))
+  app.use(servicePath, createService(options))
 
   // Get our initialized service so that we can register hooks and filters
-  const service = app.service('guild')
+  const service = app.service(servicePath)
 
   service.hooks(hooks)
 

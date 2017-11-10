@@ -12,14 +12,6 @@ const restrict = [
 
 const customizeBlizzardUser = () => {
   return hook => {
-    console.log('Customizing Github Profile')
-    // If there is a github field they signed up or
-    // signed in with github so let's pull the primary account email.
-    if (hook.data.github) {
-      hook.data.email = hook.data.github.profile.emails.find(email => email.primary).value
-    }
-    // if ()
-
     if (hook.params.oauth.provider === 'blizzard') {
       hook.data.battleTag = hook.data.blizzard.profile.battletag
     }

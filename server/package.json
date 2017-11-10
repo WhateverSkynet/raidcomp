@@ -26,9 +26,11 @@
     "eslint": "eslint src/. test/. --config .eslintrc.json",
     "standard": "standard",
     "start": "node src/",
-    "mocha": "mocha test/ --recursive --exit"
+    "mocha": "mocha test/ --recursive --exit",
+    "mocha-dev": "mocha test/ --recursive"
   },
   "dependencies": {
+    "blizzard.js": "^2.0.3",
     "body-parser": "1.18.2",
     "compression": "1.7.1",
     "cors": "2.8.4",

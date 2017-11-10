@@ -6,15 +6,16 @@ const filters = require('./character.filters')
 
 module.exports = function () {
   const app = this
-  const prefix = app.get('prefix')
   const Model = createModel(app)
   const paginate = app.get('paginate')
+  const prefix = app.get('prefix')
   const servicePath = prefix + '/character'
 
   const options = {
     name: 'character',
     Model,
-    paginate
+    paginate,
+    overwrite: false
   }
 
   // Initialize our service with any options it requires

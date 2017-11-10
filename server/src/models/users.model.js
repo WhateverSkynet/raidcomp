@@ -6,14 +6,11 @@ module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient')
   const users = new mongooseClient.Schema({
 
-    b: { type: Number, alias: 'blizzardId' },
-    t: { type: String, alias: 'battleTag' }
+    blizzardId: { type: Number },
+    battleTag: { type: String }
 
   }, {
-    timestamps: {
-      createdAt: 'ca',
-      updatedAt: 'ua'
-    }
+    timestamps: true
   })
 
   return mongooseClient.model('users', users)

@@ -12,25 +12,19 @@ module.exports = function (app) {
   const { Schema } = mongooseClient
 
   const group = new Schema({
-    i: { type: Number, required: true, alias: 'index' },
-    c: { type: String, required: true, alias: 'characterId' }
+    index: { type: Number, required: true },
+    characterId: { type: String, required: true }
   }, {
-    timestamps: {
-      createdAt: 'ca',
-      updatedAt: 'ua'
-    }
+    timestamps: true
   })
 
   const plan = new Schema({
-    t: { type: String, required: true, alias: 'title' },
-    b: { type: String, required: true, alias: 'boss' },
-    d: { type: Date, required: true, alias: 'date' },
-    g: { type: [group], alias: 'groups' }
+    title: { type: String, required: true },
+    boss: { type: String, required: true },
+    date: { type: Date, required: true },
+    groups: { type: [group] }
   }, {
-    timestamps: {
-      createdAt: 'ca',
-      updatedAt: 'ua'
-    }
+    timestamps: true
   })
 
   return mongooseClient.model('plan', plan)

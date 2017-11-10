@@ -16,7 +16,6 @@ module.exports = function () {
   app.configure(oauth2(Object.assign({
     name: 'blizzard',
     Strategy: BlizzardStrategy,
-    idField: 'b',
     callbackURL: 'https://' + host + '/auth/blizzard/callback'
   }, config.blizzard)))
 

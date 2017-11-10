@@ -24,6 +24,53 @@ const mongoose = require('./mongoose')
 
 const app = feathers()
 
+const blizzard = require('blizzard.js').initialize({ apikey: process.env.BLIZZARD_ID })
+
+/**
+ * Manages concurrent Blizzard requests and ensures that we are not exceeding rate limits
+ */
+const handleRateLimits = () => {
+  const { get: original } = blizzard
+  let initiatedRequests = []
+  let queue = []
+  // This method should be called when new request is added to the queue or a request is finished
+
+  const enqueue = () => {
+    const now = Date.now()
+    initiatedRequests = initiatedRequests.filter(start => now - start < 1100)
+    while (initiatedRequests.length < 100 && queue.length) {
+      const [request] = queue.splice(0, 1)
+      initiatedRequests.push(Date.now())
+      original.apply(blizzard, request.args)
+        .then(data => {
+          request.resolve(data)
+          enqueue()
+        })
+        .catch(error => {
+          // TODO: catch rate limit errors and requeue
+          console.log(request, error)
+          request.reject(error)
+        })
+    }
+  }
+  // We need to replace the blizzard.js get method with a wrapper to queue requests
+  const get = (...args) => {
+    return new Promise((resolve, reject) => {
+      queue.push({
+        resolve,
+        reject,
+        args
+      })
+      enqueue()
+    })
+  }
+  blizzard.get = get
+}
+
+handleRateLimits()
+
+app.set('blizzard', blizzard)
+
 // Load app configuration
 app.configure(configuration())
 // Enable CORS, security, compression, favicon and body parsing
