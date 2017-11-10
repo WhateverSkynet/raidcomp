@@ -1,5 +1,3 @@
-#!/usr/bin/env sh
-
 if [ "$TRAVIS_PULL_REQUEST" != "true" ]
   then
     CHANGES=$(git diff --name-only HEAD HEAD~1)
