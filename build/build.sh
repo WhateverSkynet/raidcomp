@@ -1,12 +1,13 @@
 #!/usr/bin/env sh
-if [ "$TRAVIS_PULL_REQUEST" == "false" ]
+
+if [ "$TRAVIS_PULL_REQUEST" != "true" ]
   then
     CHANGES=$(git diff --name-only HEAD HEAD~1)
   else
     CHANGES=$(git diff --name-only HEAD $(git merge-base HEAD $TRAVIS_BRANCH))
 fi
 docker login --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD"
-if [ "$2" == "client" ] && [ -n "$(grep '^client' <<< "$CHANGES")" ]
+if [ "$2" == "client" ] && [ -n "$(echo "$CHANGES" | grep '^client')" ]
   then
     echo "building client"
     cd client
@@ -20,7 +21,7 @@ if [ "$2" == "client" ] && [ -n "$(grep '^client' <<< "$CHANGES")" ]
     fi
 fi
 
-if [ "$2" == "server" ] && [ -n "$(grep '^server' <<< "$CHANGES")" ]
+if [ "$2" == "server" ] && [ -n "$(echo "$CHANGES" | grep '^client')" ]
   then
     echo "building server"
     cd server
