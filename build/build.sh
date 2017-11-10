@@ -7,7 +7,8 @@ if [ "$TRAVIS_PULL_REQUEST" != "true" ]
     CHANGES=$(git diff --name-only HEAD $(git merge-base HEAD $TRAVIS_BRANCH))
 fi
 docker login --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD"
-if [ "$2" == "client" ] && [ -n "$(echo "$CHANGES" | grep '^client')" ]
+COMMMIT_MESSAGE=$(git log -1 --oneline)
+if [ "$2" == "client" ] # && [ -n "$(grep '^client' <<< "$CHANGES")" ] || [ -n "$(grep '\[ci force\]' <<< "$COMMMIT_MESSAGE")'" ]
   then
     echo "building client"
     cd client
@@ -21,7 +22,7 @@ if [ "$2" == "client" ] && [ -n "$(echo "$CHANGES" | grep '^client')" ]
     fi
 fi
 
-if [ "$2" == "server" ] && [ -n "$(echo "$CHANGES" | grep '^client')" ]
+if [ "$2" == "server" ] #&& [ -n "$(grep '^server' <<< "$CHANGES")" ] || [ -n "$(grep '\[ci force\]' <<< "$COMMMIT_MESSAGE")'" ]
   then
     echo "building server"
     cd server
