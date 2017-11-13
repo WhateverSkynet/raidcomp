@@ -2,16 +2,17 @@
 //
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
-module.exports = function (app) {
+module.exports = function(app) {
   const mongooseClient = app.get('mongooseClient')
-  const users = new mongooseClient.Schema({
-
-    blizzardId: { type: Number },
-    battleTag: { type: String }
-
-  }, {
-    timestamps: true
-  })
+  const users = new mongooseClient.Schema(
+    {
+      blizzardId: { type: Number },
+      battleTag: { type: String },
+    },
+    {
+      timestamps: true,
+    },
+  )
 
   return mongooseClient.model('users', users)
 }

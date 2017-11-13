@@ -6,8 +6,8 @@ const restrict = [
   authenticate('jwt'),
   restrictToOwner({
     idField: '_id',
-    ownerField: '_id'
-  })
+    ownerField: '_id',
+  }),
 ]
 
 const customizeBlizzardUser = () => {
@@ -28,22 +28,22 @@ module.exports = {
     create: [customizeBlizzardUser()],
     update: [...restrict, customizeBlizzardUser()],
     patch: [...restrict],
-    remove: [...restrict]
+    remove: [...restrict],
   },
 
   after: {
     all: [
       commonHooks.when(
         hook => hook.params.provider,
-        commonHooks.discard('password')
-      )
+        commonHooks.discard('password'),
+      ),
     ],
     find: [],
     get: [],
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
   },
 
   error: {
@@ -53,6 +53,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 }

@@ -4,7 +4,7 @@ const createModel = require('../../models/plan.model')
 const hooks = require('./plan.hooks')
 const filters = require('./plan.filters')
 
-module.exports = function () {
+module.exports = function() {
   const app = this
   const Model = createModel(app)
   const paginate = app.get('paginate')
@@ -15,7 +15,7 @@ module.exports = function () {
     name: 'plan',
     Model,
     paginate,
-    overwrite: false
+    overwrite: false,
   }
 
   // Initialize our service with any options it requires

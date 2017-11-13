@@ -2,7 +2,7 @@
 const assert = require('assert')
 const app = require('../../src/app')
 
-describe('\'character\' service', () => {
+describe("'character' service", () => {
   it('registered the service', () => {
     const service = app.service('/api/character')
 

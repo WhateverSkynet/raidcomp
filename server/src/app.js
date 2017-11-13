@@ -24,7 +24,9 @@ const mongoose = require('./mongoose')
 
 const app = feathers()
 
-const blizzard = require('blizzard.js').initialize({ apikey: process.env.BLIZZARD_ID })
+const blizzard = require('blizzard.js').initialize({
+  apikey: process.env.BLIZZARD_ID,
+})
 
 /**
  * Manages concurrent Blizzard requests and ensures that we are not exceeding rate limits
@@ -35,13 +37,21 @@ const handleRateLimits = () => {
   let queue = []
   // This method should be called when new request is added to the queue or a request is finished
 
+  const check = () => {
+    if (queue.length) {
+      enqueue()
+      setTimeout(check, 1000)
+    }
+  }
   const enqueue = () => {
     const now = Date.now()
     initiatedRequests = initiatedRequests.filter(start => now - start < 1100)
+
     while (initiatedRequests.length < 100 && queue.length) {
       const [request] = queue.splice(0, 1)
       initiatedRequests.push(Date.now())
-      original.apply(blizzard, request.args)
+      original
+        .apply(blizzard, request.args)
         .then(data => {
           request.resolve(data)
           enqueue()
@@ -50,6 +60,7 @@ const handleRateLimits = () => {
           // TODO: catch rate limit errors and requeue
           console.log(request, error)
           request.reject(error)
+          enqueue()
         })
     }
   }
@@ -59,9 +70,9 @@ const handleRateLimits = () => {
       queue.push({
         resolve,
         reject,
-        args
+        args,
       })
-      enqueue()
+      check()
     })
   }
   blizzard.get = get
@@ -95,6 +106,12 @@ app.configure(authentication)
 // Set up our services (see `services/index.js`)
 app.configure(services)
 // Configure a middleware for 404s and the error handler
+if (process.env.NODE_ENV !== 'production') {
+  // Allow to serve client files using node during development
+  app.use('/*', (req, res) =>
+    res.sendFile(path.join(app.get('public'), 'index.html')),
+  )
+}
 app.use(notFound())
 app.use(handler())
 

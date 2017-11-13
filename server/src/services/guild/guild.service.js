@@ -4,7 +4,7 @@ const createModel = require('../../models/guild.model')
 const hooks = require('./guild.hooks')
 const filters = require('./guild.filters')
 
-module.exports = function () {
+module.exports = function() {
   const app = this
   const Model = createModel(app)
   const paginate = app.get('paginate')
@@ -15,7 +15,7 @@ module.exports = function () {
     name: 'guild',
     Model,
     paginate,
-    overwrite: false
+    overwrite: false,
   }
 
   // Initialize our service with any options it requires

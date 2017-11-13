@@ -1,0 +1,52 @@
+
+.character > div {
+  /* display: inline-block; */
+
+}
+
+.character.hunter {
+  background-color: var(--color-hunter);
+}
+
+.character.druid {
+  background-color: var(--color-druid);
+}
+
+.character.mage {
+  background-color: var(--color-mage);
+}
+
+.character.monk {
+  background-color: var(--color-monk);
+}
+
+.character.paladin {
+  background-color: var(--color-paladin);
+}
+
+.character.priest {
+  background-color: var(--color-priest);
+}
+
+.character.rogue {
+  background-color: var(--color-rogue);
+}
+
+.character.shaman {
+  background-color: var(--color-shaman);
+}
+
+.character.warlock {
+  background-color: var(--color-warlock);
+}
+
+.character.warrior {
+  background-color: var(--color-warrior);
+}
+
+.character.death-knight {
+  background-color: var(--color-death-knight);
+}
+.character.demon-hunter {
+  background-color: var(--color-demon-hunter);
+}

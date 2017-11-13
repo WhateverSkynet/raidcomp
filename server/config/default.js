@@ -2,7 +2,7 @@ const host = 'strel.we-guild.tk'
 module.exports = {
   host,
   port: 3025,
-  public: '../public/',
+  public: '../../client/build/',
   prefix: '/api',
   paginate: {
     default: 10,

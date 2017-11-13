@@ -1,5 +1,137 @@
-body {
+
+/* reset this shit */
+
+html,
+body,
+p,
+ol,
+ul,
+li,
+dl,
+dt,
+dd,
+blockquote,
+figure,
+fieldset,
+legend,
+textarea,
+pre,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+
+ul {
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: inherit;
+}
+
+*:before, *:after {
+  box-sizing: inherit;
+}
+
+img,
+embed,
+object,
+audio,
+video {
+  height: auto;
+  max-width: 100%;
+}
+
+iframe {
+  border: 0;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+td,
+th {
+  padding: 0;
+  text-align: left;
+}
+
+/* Some nasty ass styling */
+
+html {
+  background-color: #f0f0f0;
+  color: #101010;
+  font-family: 'Open Sans', sans-serif;
+  background-image: url(//ktek.online/whatever/img/bg-pattern.jpg);
+  background-repeat: repeat;
+}
+
+:root {
+  --color-death-knight: #C41E3A;
+  --color-druid: #FF7D0A;
+  --color-hunter: #ABD473;
+  --color-mage: #69EEFF;
+  --color-monk: #00FF96;
+  --color-paladin: #F58CBA;
+  --color-priest: #FFFFFF;
+  --color-rogue: #EEE468;
+  --color-shaman: #2459FF;
+  --color-warlock: #9482CA;
+  --color-warrior: #C79C6E;
+  --color-demon-hunter: #b854d4;
+}
+
+body {
+  background-color: #f0f0f0;
+  color: #101010;
+  font-family: 'Open Sans', sans-serif;
+  background-image: url(https://ktek.online/whatever/img/bg-pattern.jpg);
+  background-repeat: repeat;
+}
+
+.container {
+  display: flex;
+  padding: 1rem;
+}
+
+.filter-button[data-state="on"] {
+  background-color: #2459FF;
+}
+
+.column {
+  flex: 1 1 calc(100% - 50px)
+}
+
+.class-icon {
+  width: 22px;
+  height: 22px;
+  margin-right: .75em;
 }

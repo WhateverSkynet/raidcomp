@@ -2,7 +2,7 @@
   "name": "raidcomp-server",
   "description": "",
   "version": "0.0.0",
-  "homepage": "",
+  "homepage": "https://raidcomp.we-guild.tk",
   "main": "src",
   "keywords": [
     "feathers"
@@ -27,7 +27,8 @@
     "standard": "standard",
     "start": "node src/",
     "mocha": "mocha test/ --recursive --exit",
-    "mocha-dev": "mocha test/ --recursive"
+    "mocha-dev": "mocha test/ --recursive",
+    "format": "prettier --write \"{src,test}/**/*.js\""
   },
   "dependencies": {
     "blizzard.js": "^2.0.3",
@@ -54,7 +55,9 @@
   },
   "devDependencies": {
     "eslint": "4.10.0",
+    "eslint-plugin-prettier": "2.3.1",
     "mocha": "4.0.1",
+    "prettier": "1.8.2",
     "request": "2.83.0",
     "request-promise": "4.2.2",
     "standard": "^10.0.3"

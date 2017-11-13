@@ -1,0 +1,9 @@
+
+.roster {
+  display: flex;
+  flex-direction: row;
+}
+
+/* .roster .character-role-container {
+    flex: 1 1 calc(100% - 50px);
+} */

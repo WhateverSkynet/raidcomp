@@ -1,24 +1,25 @@
-const { authenticate } = require('feathers-authentication').hooks
+// const { authenticate } = require('feathers-authentication').hooks
+const transformHook = require('../../hooks/object-transformer')
 
 module.exports = {
   before: {
-    all: [authenticate('jwt')],
-    find: [],
-    get: [],
-    create: [],
-    update: [],
-    patch: [],
-    remove: []
-  },
-
-  after: {
     all: [],
     find: [],
     get: [],
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [],
+  },
+
+  after: {
+    all: [transformHook()],
+    find: [],
+    get: [],
+    create: [],
+    update: [],
+    patch: [],
+    remove: [],
   },
 
   error: {
@@ -28,6 +29,6 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
-  }
+    remove: [],
+  },
 }
