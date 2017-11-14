@@ -58,7 +58,7 @@ const handleRateLimits = () => {
         })
         .catch(error => {
           // TODO: catch rate limit errors and requeue
-          console.log(request, error)
+          // console.log(request, error)
           request.reject(error)
           enqueue()
         })

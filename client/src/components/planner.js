@@ -118,7 +118,7 @@ class Planner extends Component {
   }
   onDragEnd(result) {
     // dropped outside the list
-    // console.log(result)
+    // console.log(result);
     if (!result.destination) {
       return
     }

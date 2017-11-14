@@ -86,12 +86,12 @@ const checkDuplicate = () => {
   }
 }
 
-const WOW_AUDIT_ROLES = {
-  tank: 0,
-  heal: 1,
-  melee: 2,
-  ranged: 3,
-}
+// const WOW_AUDIT_ROLES = {
+//   tank: 0,
+//   heal: 1,
+//   melee: 2,
+//   ranged: 3,
+// }
 
 const getRole = row => {
   if (row.find(x => x.toLowerCase() === 'tank')) {
@@ -110,10 +110,9 @@ const syncWithAudit = () => {
   return async hook => {
     const { wowAuditKey } = hook.data
     if (wowAuditKey) {
-      const [header, ...data] = await get(
+      const [, ...data] = await get(
         `http://data.wowaudit.com/wowcsv/${wowAuditKey}.csv`,
       )
-      const roleIndex = header.indexOf('role')
       // console.log(data)
       hook.roles = data.reduce((result, row) => {
         const name = row[0].toLowerCase()
@@ -152,7 +151,7 @@ const syncWithBlizzard = () => {
     }
 
     const characterUpdates = guild.members
-      .filter((x, i) => x.character.level === 110)
+      .filter(x => x.character.level === 110)
       .map(async x => {
         const data = {
           name: x.character.name,

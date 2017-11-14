@@ -21,7 +21,7 @@ const syncWithBlizzard = () => {
     const { realm, name, region: origin } = data
     const blizzard = app.get('blizzard')
     if (hook.data.role) {
-      console.log(name, realm, hook.data.role)
+      // console.log(name, realm, hook.data.role)
     }
     if (!id && method === 'update') {
       throw new Error('Update requires character Id')
@@ -39,7 +39,7 @@ const syncWithBlizzard = () => {
       hook.data.ilvl = character.items.averageItemLevelEquipped
       hook.data.lastModified = character.lastModified
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
 
     return hook
