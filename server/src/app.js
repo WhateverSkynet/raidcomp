@@ -106,12 +106,12 @@ app.configure(authentication)
 // Set up our services (see `services/index.js`)
 app.configure(services)
 // Configure a middleware for 404s and the error handler
-if (process.env.NODE_ENV !== 'production') {
-  // Allow to serve client files using node during development
-  app.use('/*', (req, res) =>
-    res.sendFile(path.join(app.get('public'), 'index.html')),
-  )
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   // Allow to serve client files using node during development
+//   app.use('/*', (req, res) =>
+//     res.sendFile(path.join(app.get('public'), 'index.html')),
+//   )
+// }
 app.use(notFound())
 app.use(handler())
 
