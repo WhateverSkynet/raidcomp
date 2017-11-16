@@ -7,6 +7,7 @@
     "react": "16.1.0",
     "react-beautiful-dnd": "^2.5.0",
     "react-dom": "16.1.0",
+    "react-form": "2.11.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
     "socket.io-client": "2.0.4",

@@ -1,23 +1,60 @@
 import React, { Component } from 'react'
-import { planService } from '../feathers'
+import { planService, guildService } from '../feathers'
 import PlanList from '../components/plan-list'
+import PlanForm from '../components/plan/form'
 
 class PlanContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
       plans: [],
+      guilds: [],
     }
 
-    planService.find().then(data => {
+    planService
+      .find({
+        limit: 0,
+      })
+      .then(data => {
+        this.setState({
+          plans: data.data,
+        })
+      })
+
+    guildService
+      .find({
+        limit: 0,
+      })
+      .then(data => {
+        this.setState({
+          guilds: data.data.map(guild => ({
+            label: guild.name,
+            value: guild.id,
+          })),
+        })
+      })
+
+    planService.on('created', plan => {
+      const { plans } = this.state
       this.setState({
-        plans: data.data,
+        plans: [...plans, plan],
       })
     })
   }
+
+  onCreate() {}
+
   render() {
-    const { plans } = this.state
-    return <PlanList plans={plans} />
+    const { plans, guilds } = this.state
+    return [
+      <PlanList plans={plans} key="list" />,
+      <PlanForm
+        title="Create New Plan"
+        key="form"
+        guilds={guilds}
+        onSubmit={value => planService.create(value)}
+      />,
+    ]
   }
 }
 

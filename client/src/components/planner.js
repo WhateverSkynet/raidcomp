@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './planner.css'
-import { planService, guildService } from '../feathers'
+import { planService } from '../feathers'
 import { DragDropContext } from 'react-beautiful-dnd'
 
 import { v4 } from 'uuid'
@@ -12,18 +12,14 @@ const GROUP_SIZE = 5
 /**
  *
  * @param {number} groupCount
- * @param {number} compositionCount
  * @param {object[]} compositions
  */
-const generateCompositions = (groupCount, compositionCount, compositions) => {
-  return Array.from(
-    { length: compositionCount },
-    (v, composition) => composition,
-  ).map((composition, i) => ({
-    id: v4(),
-    members: compositions.length < i ? compositions[i] : [],
-    groups: generateGroups(groupCount),
-  }))
+const generateCompositions = (groupCount, compositions) => {
+  return compositions.map(composition =>
+    Object.assign({ id: v4() }, composition, {
+      groups: generateGroups(groupCount),
+    }),
+  )
 }
 /**
  *
@@ -70,42 +66,77 @@ const generateGroups = groupCount => {
 // }
 
 class Planner extends Component {
-  static defaultProps = {
-    compositionCount: 1,
-  }
+  static defaultProps = {}
   constructor(props) {
     super(props)
-    const { compositionCount } = props
-    const compositions = generateCompositions(4, compositionCount, [])
+
     this.state = {
-      compositions,
+      compositions: [],
+      compositionsRaw: [],
       compositionCharacters: [],
       guild: {},
       rosterGroups: [],
       rosterCharacters: [],
     }
     const { id } = props.match.params
-    planService.get(id, { query: { $populate: 'roster' } }).then(data => {
-      const rosterCharacters = data.roster
-        .map(c => {
-          c.classId = c.class
-          delete c.class
-          return c
-        })
-        .filter(c => c.role !== -1)
-      const roleGroups = [
-        { id: v4(), role: 0 },
-        { id: v4(), role: 1 },
-        { id: v4(), role: 2 },
-        { id: v4(), role: 3 },
-      ]
-      this.setState({
-        rosterGroups: roleGroups,
-        rosterCharacters,
-      })
-    })
+    planService
+      .get(id, { query: { $populate: 'roster' } })
+      .then(data => this.updatePlan(data))
+    planService.on('updated', data => this.updatePlan(data))
     this.onDragEnd = this.onDragEnd.bind(this)
     this.onRosterGroupUpdate = this.onRosterGroupUpdate.bind(this)
+  }
+
+  updatePlan(data) {
+    const rosterCharacters = data.roster
+      .map(c => {
+        c.classId = c.class
+        delete c.class
+        return c
+      })
+      .filter(c => c.role !== -1)
+    const compositions = generateCompositions(
+      4,
+      data.compositions.map(composition =>
+        Object.assign({}, composition, {
+          members: composition.members
+            // .filter(member => !!member.character)
+            .map(member =>
+              Object.assign(
+                { raidIndex: member.index, memberId: member._id },
+                data.roster.find(c => c._id === member.character),
+              ),
+            ),
+        }),
+      ),
+    )
+    const roleGroups = [
+      { id: v4(), role: 0 },
+      { id: v4(), role: 1 },
+      { id: v4(), role: 2 },
+      { id: v4(), role: 3 },
+    ]
+    const compositionCharacters = compositions.reduce((total, composition) => {
+      return [
+        ...total,
+        ...composition.members.map(raidMember =>
+          Object.assign(
+            {
+              compositionId: composition.id,
+            },
+            raidMember,
+          ),
+        ),
+      ]
+    }, [])
+
+    this.setState({
+      rosterGroups: roleGroups,
+      rosterCharacters,
+      compositionCharacters,
+      compositionsRaw: data.compositions.compositions,
+      compositions,
+    })
   }
 
   onRosterGroupUpdate(rosterCharacterGroups) {
@@ -114,6 +145,7 @@ class Planner extends Component {
   onDragEnd(result) {
     // dropped outside the list
     // console.log(result);
+    let didChange = false
     if (!result.destination) {
       return
     }
@@ -213,6 +245,7 @@ class Planner extends Component {
         compositions: newCompositions,
         compositionCharacters: newCompositionCharacters,
       })
+      didChange = true
     } else if (sourceCompositionGroup && destinationRosterGroup) {
       const { index: sourceIndex } = result.source
       const raidIndex = sourceCompositionGroup.group * GROUP_SIZE + sourceIndex
@@ -238,6 +271,7 @@ class Planner extends Component {
         compositions: newCompositions,
         compositionCharacters: newCompositionCharacters,
       })
+      didChange = true
     } else if (
       destinationCompositionGroup.compositionId ===
       sourceCompositionGroup.compositionId
@@ -310,10 +344,37 @@ class Planner extends Component {
         compositions: newCompositions,
         compositionCharacters: newCompositionCharacters,
       })
+      didChange = true
+    }
+    if (didChange) {
+      const { id } = this.props.match.params
+      planService.update(
+        id,
+        {
+          compositions: this.state.compositions.map(composition =>
+            Object.assign(
+              {},
+              composition,
+              {
+                members: composition.members.map(member => ({
+                  index: member.raidIndex,
+                  character: member._id,
+                  _id: member.memberId,
+                })),
+              },
+              { groups: undefined },
+            ),
+          ),
+        },
+        {
+          query: { $populate: 'roster' },
+        },
+      )
     }
   }
 
   render() {
+    const { id } = this.props.match.params
     const {
       rosterGroups,
       compositions,
@@ -322,15 +383,50 @@ class Planner extends Component {
     } = this.state
     return (
       <div className="container">
+        <div>
+          <button
+            onClick={() =>
+              planService.update(
+                id,
+                {
+                  compositions: [...this.state.compositions, {}],
+                },
+                {
+                  query: { $populate: 'roster' },
+                },
+              )
+            }
+          >
+            Add
+          </button>
+        </div>
         <DragDropContext onDragEnd={this.onDragEnd}>
           <div className="column raid-comp">
             {/* <div className="grid" /> */}
             {compositions.map(composition => (
-              <RaidComposition
-                key={composition.id}
-                groups={composition.groups}
-                characters={composition.members}
-              />
+              <div key={composition.id}>
+                <RaidComposition
+                  groups={composition.groups}
+                  characters={composition.members}
+                />
+                <button
+                  onClick={() =>
+                    planService.update(
+                      id,
+                      {
+                        compositions: compositions.filter(
+                          x => x.id !== composition.id,
+                        ),
+                      },
+                      {
+                        query: { $populate: 'roster' },
+                      },
+                    )
+                  }
+                >
+                  Remove
+                </button>
+              </div>
             ))}
           </div>
           <div className="column roster">

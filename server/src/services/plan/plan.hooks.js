@@ -1,12 +1,21 @@
 // const { authenticate } = require('feathers-authentication').hooks
 const transformHook = require('../../hooks/object-transformer')
 
+const populateCompositions = () => hook => {
+  hook.data.compositions = [
+    {
+      members: [],
+    },
+  ]
+  return hook
+}
+
 const loadRoster = () => {
   return async hook => {
     const { data, app } = hook
     const { guild: guildId } = data
     const guildService = app.service('/api/guild')
-    const characterService = app.service('/api/guild')
+    const characterService = app.service('/api/character')
 
     const guild = await guildService.get(guildId, {
       query: {
@@ -14,7 +23,9 @@ const loadRoster = () => {
       },
     })
     const tasks = guild.members.map(async member => {
-      const data = Object.assign({ skipBlizzardUpdate: true }, member)
+      const data = Object.assign({ skipBlizzardUpdate: true }, member, {
+        _id: undefined,
+      })
       const { id } = await characterService.create(data)
       return id
     })
@@ -28,7 +39,7 @@ module.exports = {
     all: [],
     find: [],
     get: [],
-    create: [loadRoster()],
+    create: [populateCompositions(), loadRoster()],
     update: [],
     patch: [],
     remove: [],
