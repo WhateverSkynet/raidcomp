@@ -42,15 +42,18 @@ module.exports = function(app) {
   const character = new Schema(
     {
       name: { type: String, required: true },
+      realm: { type: String, required: true },
       class: { type: Number, required: true },
       role: { type: Number, required: true, default: -1 },
       armorToken: { type: Number, required: true, default: -1 },
       armorType: { type: Number, required: true, default: -1 },
       ilvl: { type: Number, required: true },
       rank: { type: Number, required: true, default: -1 },
+      main: { type: Boolean, required: true, default: false },
       region: { type: String, required: true },
       guild: { type: Schema.Types.ObjectId, ref: 'guild' },
-      lastModified: { type: Number, required: true },
+      plan: { type: Schema.Types.ObjectId, ref: 'plan' },
+      lastModified: { type: Number, required: true, default: 0 },
     },
     {
       timestamps: true,

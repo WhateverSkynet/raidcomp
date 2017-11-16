@@ -27,6 +27,7 @@ module.exports = function(app) {
       boss: { type: String, required: true },
       date: { type: Date, required: true },
       guild: { type: Schema.Types.ObjectId, ref: 'guild', required: true },
+      roster: [{ type: Schema.Types.ObjectId, ref: 'character' }],
       groups: { type: [group] },
     },
     {

@@ -1,5 +1,10 @@
 const transformHook = require('../../hooks/object-transformer')
 const http = require('http')
+const csv = require('fast-csv')
+
+const {
+  CLASS_NAMES,
+} = require('../../models/character.model').CHARACTER_CONSTANTS
 
 const get = url =>
   new Promise((resolve, reject) => {
@@ -23,23 +28,29 @@ const get = url =>
           reject(error)
           return
         }
-
         res.setEncoding('utf8')
-        let rawData = ''
-        res.on('data', chunk => {
-          rawData += chunk
-        })
-        res.on('end', () => {
-          try {
-            const parsedData = rawData
-              .replace(/\s+$/, '')
-              .split('\n')
-              .map(r => r.split(','))
-            resolve(parsedData)
-          } catch (e) {
-            reject(e)
-          }
-        })
+        const data = []
+        res
+          .pipe(csv())
+          .on('data', chunk => {
+            data.push(chunk)
+          })
+          .on('end', () => {
+            resolve(data)
+            // try {
+            //   const pattern = /^(?:(?:"((?:""|[^"])+)"|([^,]*))(?:$|,))+$/
+            //   const parsedData = rawData
+            //     .replace(/\s+$/, '')
+            //     .split('\n')
+            //     .map(r => {
+            //       const match = pattern.exec(r)
+            //       return r.split(',')
+            //     })
+            //   resolve(parsedData)
+            // } catch (e) {
+            //   reject(e)
+            // }
+          })
       })
       .on('error', e => {
         reject(e)
@@ -86,109 +97,85 @@ const checkDuplicate = () => {
   }
 }
 
-// const WOW_AUDIT_ROLES = {
-//   tank: 0,
-//   heal: 1,
-//   melee: 2,
-//   ranged: 3,
-// }
+const WOW_AUDIT_ROLES = {
+  tank: 0,
+  heal: 1,
+  melee: 2,
+  ranged: 3,
+}
 
-const getRole = row => {
-  if (row.find(x => x.toLowerCase() === 'tank')) {
-    return 0
-  } else if (row.find(x => x.toLowerCase() === 'heal')) {
-    return 1
-  } else if (row.find(x => x.toLowerCase() === 'melee')) {
-    return 2
-  } else if (row.find(x => x.toLowerCase() === 'ranged')) {
-    return 3
-  }
-  return -1
+const getCharactersFromWowAudit = async key => {
+  const [, ...data] = await get(`http://data.wowaudit.com/wowcsv/${key}.csv`)
+  // console.log(data)
+  return data.map(row => {
+    const name = row[0]
+    const classIndex = CLASS_NAMES.indexOf(row[1])
+    const realm = row[2]
+    const role = WOW_AUDIT_ROLES[row[92].toLowerCase()]
+    const ilvl = parseInt(row[3], 10)
+    return {
+      class: classIndex,
+      name,
+      realm,
+      role,
+      ilvl,
+    }
+  })
 }
 
 const syncWithAudit = () => {
   return async hook => {
-    const { wowAuditKey } = hook.data
-    if (wowAuditKey) {
-      const [, ...data] = await get(
-        `http://data.wowaudit.com/wowcsv/${wowAuditKey}.csv`,
-      )
-      // console.log(data)
-      hook.roles = data.reduce((result, row) => {
-        const name = row[0].toLowerCase()
-        const realm = row[2].toLowerCase()
-        const role = getRole(row)
-        const slug = [name, realm].join('_')
-        result.set(slug, role)
-        return result
-      }, new Map())
-    }
-    return hook
-  }
-}
+    const { data, app, id: guildId } = hook
+    const { region, wowAuditKeys } = data
+    if (Array.isArray(wowAuditKeys) && wowAuditKeys.length) {
+      const [mains, ...alts] = wowAuditKeys
+      const characterService = app.service('/api/character')
+      const mainCharacters = await getCharactersFromWowAudit(mains)
+      let oldCharacters = []
 
-const syncWithBlizzard = () => {
-  return async hook => {
-    const { data, app, roles = new Map(), id: guildId } = hook
-    const { realm, name, region: origin } = data
-    const blizzard = app.get('blizzard')
-    const characterService = app.service('/api/character')
-    const { data: guild } = await blizzard.wow.guild(['profile', 'members'], {
-      realm,
-      name,
-      origin,
-    })
+      if (guildId) {
+        const characters = await characterService.find({
+          query: {
+            guild: guildId,
+          },
+          limit: 0,
+        })
+        oldCharacters = characters.data
+      }
 
-    let oldCharacters = []
-    if (guildId) {
-      const characters = await characterService.find({
-        query: {
-          guild: guildId,
-        },
-        limit: 0,
-      })
-      oldCharacters = characters.data
-    }
-
-    const characterUpdates = guild.members
-      .filter(x => x.character.level === 110)
-      .map(async x => {
-        const data = {
-          name: x.character.name,
-          realm: x.character.realm,
-          region: origin,
-          guild: guildId,
-        }
-
-        const slug = [data.name.toLowerCase(), data.realm.toLowerCase()].join(
-          '_',
+      const characterUpdates = mainCharacters.map(async x => {
+        const data = Object.assign(
+          {
+            region,
+            guild: guildId,
+            main: true,
+            skipBlizzardUpdate: true,
+          },
+          x,
         )
-        if (roles.has(slug)) {
-          data.role = roles.get(slug)
-        }
-        data.rank = x.rank
         const { id } = await characterService.create(data)
 
         return id
       })
 
-    let members = await Promise.all(characterUpdates)
+      alts.forEach(() => {})
 
-    hook.data.members = members
+      let members = await Promise.all(characterUpdates)
 
-    oldCharacters.forEach(character => characterService.remove(character.id))
+      hook.data.members = members
 
+      oldCharacters.forEach(character => characterService.remove(character.id))
+    }
     return hook
   }
 }
-
 module.exports = {
   before: {
     all: [],
     find: [],
     get: [],
-    create: [checkDuplicate(), syncWithAudit(), syncWithBlizzard()],
-    update: [findGuild(), syncWithAudit(), syncWithBlizzard()],
+    create: [checkDuplicate(), syncWithAudit()],
+    update: [findGuild(), syncWithAudit()],
     patch: [],
     remove: [],
   },

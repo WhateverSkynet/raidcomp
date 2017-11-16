@@ -85,30 +85,25 @@ class Planner extends Component {
       rosterCharacters: [],
     }
     const { id } = props.match.params
-    planService
-      .get(id, { query: { $populate: 'guild' } })
-      .then(data => {
-        return guildService.get(data.guild, { query: { $populate: 'members' } })
-      })
-      .then(data => {
-        const rosterCharacters = data.members
-          .map(c => {
-            c.classId = c.class
-            delete c.class
-            return c
-          })
-          .filter(c => c.role !== -1)
-        const roleGroups = [
-          { id: v4(), role: 0 },
-          { id: v4(), role: 1 },
-          { id: v4(), role: 2 },
-          { id: v4(), role: 3 },
-        ]
-        this.setState({
-          rosterGroups: roleGroups,
-          rosterCharacters,
+    planService.get(id, { query: { $populate: 'roster' } }).then(data => {
+      const rosterCharacters = data.roster
+        .map(c => {
+          c.classId = c.class
+          delete c.class
+          return c
         })
+        .filter(c => c.role !== -1)
+      const roleGroups = [
+        { id: v4(), role: 0 },
+        { id: v4(), role: 1 },
+        { id: v4(), role: 2 },
+        { id: v4(), role: 3 },
+      ]
+      this.setState({
+        rosterGroups: roleGroups,
+        rosterCharacters,
       })
+    })
     this.onDragEnd = this.onDragEnd.bind(this)
     this.onRosterGroupUpdate = this.onRosterGroupUpdate.bind(this)
   }
