@@ -34,6 +34,7 @@ class Character extends Component {
       armorToken,
       ilvl,
       showRole,
+      main,
     } = this.props
     return (
       <div
@@ -41,8 +42,12 @@ class Character extends Component {
         className={['character', CLASS_NAMES[classId]].join(' ')}
       >
         {/* <img src={icon} alt="class" /> */}
-        <div>{name} </div>
+        <div>
+          <span>{name}</span>{' '}
+          {main ? <span className="main-character">M</span> : ''}
+        </div>
         {showRole ? <span>{role} </span> : ''}
+
         <span>{armorType} </span>
         <span>{armorToken} </span>
         <span>{ilvl} </span>

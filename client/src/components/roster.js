@@ -106,7 +106,17 @@ class Roster extends Component {
   _renderGroupCharacters(index) {
     const characters = this._characterGroups[index]
     return characters.map(
-      ({ name, realm, classId, role, armorType, armorToken, ilvl, used }) => (
+      ({
+        name,
+        realm,
+        classId,
+        role,
+        armorType,
+        armorToken,
+        ilvl,
+        used,
+        main,
+      }) => (
         <Draggable
           key={[name, realm].join('_')}
           draggableId={[name, realm].join('_')}
@@ -131,6 +141,7 @@ class Roster extends Component {
                   armorToken={armorToken}
                   armorType={armorType}
                   ilvl={ilvl}
+                  main={main}
                 >
                   )
                   {name}

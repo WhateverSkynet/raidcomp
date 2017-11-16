@@ -1,7 +1,6 @@
 
-.character > div {
-  /* display: inline-block; */
-
+.character .main-character {
+  float: right;
 }
 
 .character.hunter {

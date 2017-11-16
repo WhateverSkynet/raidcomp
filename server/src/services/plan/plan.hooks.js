@@ -12,24 +12,77 @@ const populateCompositions = () => hook => {
 
 const loadRoster = () => {
   return async hook => {
-    const { data, app } = hook
-    const { guild: guildId } = data
+    const { data, app, id } = hook
+    const { syncWithGuild } = data
     const guildService = app.service('/api/guild')
     const characterService = app.service('/api/character')
+    let oldRoster = []
+    let plan
+    let guildId = data.guild
 
+    if (id) {
+      plan = await hook.service.get(id, {
+        query: { $populate: 'roster' },
+      })
+      oldRoster = plan.roster
+      if (!guildId) {
+        guildId = plan.guild
+      }
+    }
     const guild = await guildService.get(guildId, {
       query: {
         $populate: 'members',
       },
     })
-    const tasks = guild.members.map(async member => {
-      const data = Object.assign({ skipBlizzardUpdate: true }, member, {
-        _id: undefined,
+
+    if (id && syncWithGuild) {
+      const tasks = guild.members.map(async member => {
+        const data = Object.assign({ skipBlizzardUpdate: true }, member, {
+          _id: undefined,
+        })
+        return await characterService.create(data)
       })
-      const { id } = await characterService.create(data)
-      return id
-    })
-    hook.data.roster = await Promise.all(tasks)
+      const newRoster = await Promise.all(tasks)
+
+      const newCompositions = plan.compositions.map(composition => {
+        return Object.assign({}, composition, {
+          members: composition.members
+            .map(member => {
+              const character = plan.roster.find(character =>
+                character._id.equals(member.character),
+              )
+              if (!character) {
+                return
+              }
+              const newCharacter = newRoster.find(
+                c =>
+                  c.name === character.name &&
+                  c.realm === character.realm &&
+                  c.region === character.region,
+              )
+              if (newCharacter) {
+                return Object.assign({}, member, { character: newCharacter.id })
+              }
+            })
+            .filter(member => !!member),
+        })
+      })
+      hook.data.compositions = newCompositions
+      hook.data.roster = newRoster.map(character => character.id)
+
+      await Promise.all(
+        oldRoster.map(character => characterService.remove(character._id)),
+      )
+    } else if (!id) {
+      const tasks = guild.members.map(async member => {
+        const data = Object.assign({ skipBlizzardUpdate: true }, member, {
+          _id: undefined,
+        })
+        const { id } = await characterService.create(data)
+        return id
+      })
+      hook.data.roster = await Promise.all(tasks)
+    }
     return hook
   }
 }
@@ -40,7 +93,7 @@ module.exports = {
     find: [],
     get: [],
     create: [populateCompositions(), loadRoster()],
-    update: [],
+    update: [loadRoster()],
     patch: [],
     remove: [],
   },

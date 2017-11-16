@@ -148,6 +148,7 @@ class RaidComposition extends Component {
                       ilvl={character.ilvl}
                       armorToken={character.armorToken}
                       armorType={character.armorType}
+                      main={character.main}
                     >
                       {character.name}
                     </Character>

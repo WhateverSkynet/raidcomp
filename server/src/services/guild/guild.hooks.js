@@ -37,19 +37,6 @@ const get = url =>
           })
           .on('end', () => {
             resolve(data)
-            // try {
-            //   const pattern = /^(?:(?:"((?:""|[^"])+)"|([^,]*))(?:$|,))+$/
-            //   const parsedData = rawData
-            //     .replace(/\s+$/, '')
-            //     .split('\n')
-            //     .map(r => {
-            //       const match = pattern.exec(r)
-            //       return r.split(',')
-            //     })
-            //   resolve(parsedData)
-            // } catch (e) {
-            //   reject(e)
-            // }
           })
       })
       .on('error', e => {
@@ -128,9 +115,22 @@ const syncWithAudit = () => {
     const { data, app, id: guildId } = hook
     const { region, wowAuditKeys } = data
     if (Array.isArray(wowAuditKeys) && wowAuditKeys.length) {
-      const [mains, ...alts] = wowAuditKeys
       const characterService = app.service('/api/character')
-      const mainCharacters = await getCharactersFromWowAudit(mains)
+      const mapCharacter = main => async x => {
+        const data = Object.assign(
+          {
+            region,
+            guild: guildId,
+            main: main,
+            skipBlizzardUpdate: true,
+          },
+          x,
+        )
+        const { id } = await characterService.create(data)
+
+        return id
+      }
+
       let oldCharacters = []
 
       if (guildId) {
@@ -142,23 +142,16 @@ const syncWithAudit = () => {
         })
         oldCharacters = characters.data
       }
+      const [mains, ...alts] = await Promise.all(
+        wowAuditKeys.map(getCharactersFromWowAudit),
+      )
 
-      const characterUpdates = mainCharacters.map(async x => {
-        const data = Object.assign(
-          {
-            region,
-            guild: guildId,
-            main: true,
-            skipBlizzardUpdate: true,
-          },
-          x,
-        )
-        const { id } = await characterService.create(data)
-
-        return id
-      })
-
-      alts.forEach(() => {})
+      const characterUpdates = [
+        ...mains.map(mapCharacter(true)),
+        ...alts
+          .reduce((total, list) => [...total, ...list], [])
+          .map(mapCharacter(false)),
+      ]
 
       let members = await Promise.all(characterUpdates)
 

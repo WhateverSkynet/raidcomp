@@ -115,14 +115,12 @@ class Planner extends Component {
       4,
       data.compositions.map(composition =>
         Object.assign({}, composition, {
-          members: composition.members
-            // .filter(member => !!member.character)
-            .map(member =>
-              Object.assign(
-                { raidIndex: member.index, memberId: member._id },
-                data.roster.find(c => c._id === member.character),
-              ),
+          members: composition.members.map(member =>
+            Object.assign(
+              { raidIndex: member.index, memberId: member._id },
+              data.roster.find(c => c._id === member.character),
             ),
+          ),
         }),
       ),
     )
@@ -404,6 +402,21 @@ class Planner extends Component {
             }
           >
             Add
+          </button>
+          <button
+            onClick={() =>
+              planService.update(
+                id,
+                {
+                  syncWithGuild: true,
+                },
+                {
+                  query: { $populate: 'roster' },
+                },
+              )
+            }
+          >
+            Sync
           </button>
         </div>
         <DragDropContext onDragEnd={this.onDragEnd}>
