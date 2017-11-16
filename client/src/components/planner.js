@@ -65,6 +65,22 @@ const generateGroups = groupCount => {
 //   )
 // }
 
+const transformCompositions = compositions =>
+  compositions.map(composition =>
+    Object.assign(
+      {},
+      composition,
+      {
+        members: composition.members.map(member => ({
+          index: member.raidIndex,
+          character: member._id,
+          _id: member.memberId,
+        })),
+      },
+      { groups: undefined },
+    ),
+  )
+
 class Planner extends Component {
   static defaultProps = {}
   constructor(props) {
@@ -351,20 +367,7 @@ class Planner extends Component {
       planService.update(
         id,
         {
-          compositions: this.state.compositions.map(composition =>
-            Object.assign(
-              {},
-              composition,
-              {
-                members: composition.members.map(member => ({
-                  index: member.raidIndex,
-                  character: member._id,
-                  _id: member.memberId,
-                })),
-              },
-              { groups: undefined },
-            ),
-          ),
+          compositions: transformCompositions(this.state.compositions),
         },
         {
           query: { $populate: 'roster' },
@@ -389,7 +392,10 @@ class Planner extends Component {
               planService.update(
                 id,
                 {
-                  compositions: [...this.state.compositions, {}],
+                  compositions: [
+                    ...transformCompositions(this.state.compositions),
+                    {},
+                  ],
                 },
                 {
                   query: { $populate: 'roster' },
@@ -414,9 +420,9 @@ class Planner extends Component {
                     planService.update(
                       id,
                       {
-                        compositions: compositions.filter(
-                          x => x.id !== composition.id,
-                        ),
+                        compositions: transformCompositions(
+                          this.state.compositions,
+                        ).filter(x => x.id !== composition.id),
                       },
                       {
                         query: { $populate: 'roster' },

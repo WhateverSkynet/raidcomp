@@ -2,8 +2,13 @@
 .raid {
   display: flex;
   flex-flow: row wrap;
+  flex-basis: 500px;
 }
 
-/* .raid .raid-group {
+.raid-container {
+  display: flex;
+}
 
-} */
+.raid .raid-group {
+  width: 50%;
+}
