@@ -38,30 +38,33 @@ const handleRateLimits = () => {
   // This method should be called when new request is added to the queue or a request is finished
 
   const check = () => {
-    if (queue.length) {
-      enqueue()
-      setTimeout(check, 1000)
-    }
-  }
-  const enqueue = () => {
-    const now = Date.now()
-    initiatedRequests = initiatedRequests.filter(start => now - start < 1100)
+    const enqueue = () => {
+      const now = Date.now()
+      initiatedRequests = initiatedRequests.filter(start => now - start < 1100)
 
-    while (initiatedRequests.length < 100 && queue.length) {
-      const [request] = queue.splice(0, 1)
-      initiatedRequests.push(Date.now())
-      original
-        .apply(blizzard, request.args)
-        .then(data => {
-          request.resolve(data)
-          enqueue()
-        })
-        .catch(error => {
-          // TODO: catch rate limit errors and requeue
-          // console.log(request, error)
-          request.reject(error)
-          enqueue()
-        })
+      const createSuccessHandler = request => data => {
+        request.resolve(data)
+        enqueue()
+      }
+
+      const createErrorHandler = request => error => {
+        // TODO: catch rate limit errors and requeue
+        request.reject(error)
+        enqueue()
+      }
+
+      while (initiatedRequests.length < 100 && queue.length) {
+        const [request] = queue.splice(0, 1)
+        initiatedRequests.push(Date.now())
+        original
+          .apply(blizzard, request.args)
+          .then(createSuccessHandler(request))
+          .catch(createErrorHandler(request))
+      }
+      if (queue.length) {
+        enqueue()
+        setTimeout(check, 1000)
+      }
     }
   }
   // We need to replace the blizzard.js get method with a wrapper to queue requests

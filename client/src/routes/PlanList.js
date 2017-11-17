@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { planService, guildService } from '../feathers'
-import PlanList from '../components/plan-list'
-import PlanForm from '../components/plan/form'
+
+import PlanList from '../components/PlanList'
+import PlanForm from '../components/plan/PlanForm'
 
 class PlanContainer extends Component {
   constructor(props) {

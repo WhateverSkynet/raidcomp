@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-import Character from './character'
+import Character from './Character'
+import './PlanList.css'
 
 class PlanList extends Component {
   render() {

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-// import logo from './logo.svg'
+
+import PlanList from './routes/PlanList'
+import Planner from './components/Planner'
+
 import './App.css'
-import PlanList from './routes/plan-list'
-import Planner from './components/planner'
 
 class App extends Component {
   render() {

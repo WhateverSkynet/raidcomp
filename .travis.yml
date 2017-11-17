@@ -15,6 +15,7 @@ cache:
 env:
   - BUILD_TARGET=client
   - BUILD_TARGET=server
-script:
+install:
   - sonar-scanner
+script:
   - bash build/build.sh production $BUILD_TARGET

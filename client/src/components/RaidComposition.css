@@ -11,4 +11,10 @@
 
 .raid .raid-group {
   width: 50%;
+  height: 254px;
+  overflow-y: hidden;
+}
+
+.column.raid-comp {
+  flex: 0 1 800px;
 }

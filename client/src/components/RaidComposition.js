@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import CharacterType from './character.type'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
-import Character from './character'
 
-import './raid-composition.css'
+import CharacterType from './character.type'
+import Character from './Character'
+
+import './RaidComposition.css'
 
 const grid = 2
 
@@ -58,15 +59,15 @@ const calcualteMetrics = characters => {
   const average = [
     Math.floor(
       mainItemLevels.reduce((sum, ilvl, i) => sum + ilvl, 0) /
-        mainItemLevels.length,
+        (mainItemLevels.length || 1),
     ),
     Math.floor(
       altItemLevels.reduce((sum, ilvl, i) => sum + ilvl, 0) /
-        altItemLevels.length,
+        (altItemLevels.length || 1),
     ),
     Math.floor(
       totalItemLevels.reduce((sum, ilvl, i) => sum + ilvl, 0) /
-        totalItemLevels.length,
+        (totalItemLevels.length || 1),
     ),
   ]
   return characters.reduce(
@@ -101,9 +102,9 @@ const calcualteMetrics = characters => {
       ilvl: [
         {
           name: 'min',
-          mains: Math.min(...mainItemLevels),
-          alts: Math.min(...altItemLevels),
-          total: Math.min(...totalItemLevels),
+          mains: Math.min(0, ...mainItemLevels),
+          alts: Math.min(0, ...altItemLevels),
+          total: Math.min(0, ...totalItemLevels),
         },
         {
           name: 'average',
@@ -113,9 +114,9 @@ const calcualteMetrics = characters => {
         },
         {
           name: 'max',
-          mains: Math.max(...mainItemLevels),
-          alts: Math.max(...altItemLevels),
-          total: Math.max(...totalItemLevels),
+          mains: Math.max(0, ...mainItemLevels),
+          alts: Math.max(0, ...altItemLevels),
+          total: Math.max(0, ...totalItemLevels),
         },
       ],
     },
@@ -212,26 +213,6 @@ class RaidComposition extends Component {
     const { _metrics: metrics } = this
     return (
       <div className="raid-container">
-        <div className="raid">
-          {groups.map(group => (
-            <Droppable
-              key={group.id}
-              className="raid-group"
-              droppableId={`droppable_${group.id}`}
-            >
-              {(provided, snapshot) => (
-                <div
-                  className="raid-group"
-                  ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
-                >
-                  {group.members.map(this._renderRaidMember)}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          ))}
-        </div>
         <div className="metrics">
           <table>
             <thead>
@@ -289,6 +270,26 @@ class RaidComposition extends Component {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="raid">
+          {groups.map(group => (
+            <Droppable
+              key={group.id}
+              className="raid-group"
+              droppableId={`droppable_${group.id}`}
+            >
+              {(provided, snapshot) => (
+                <div
+                  className="raid-group"
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {group.members.map(this._renderRaidMember)}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ))}
         </div>
       </div>
     )

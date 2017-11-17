@@ -52,7 +52,7 @@ const loadRoster = () => {
                 character._id.equals(member.character),
               )
               if (!character) {
-                return
+                return undefined
               }
               const newCharacter = newRoster.find(
                 c =>
@@ -60,9 +60,10 @@ const loadRoster = () => {
                   c.realm === character.realm &&
                   c.region === character.region,
               )
-              if (newCharacter) {
-                return Object.assign({}, member, { character: newCharacter.id })
+              if (!newCharacter) {
+                return undefined
               }
+              return Object.assign({}, member, { character: newCharacter.id })
             })
             .filter(member => !!member),
         })
