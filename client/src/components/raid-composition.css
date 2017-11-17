@@ -7,6 +7,7 @@
 
 .raid-container {
   display: flex;
+  overflow: hidden;
 }
 
 .raid .raid-group {
