@@ -43,16 +43,14 @@ class Character extends Component {
       >
         {/* <img src={icon} alt="class" /> */}
         <div>
-          {showRole ? <span>{role} </span> : ''}
-          <span>{name}</span>
-          <span className="main-character">
-            {ilvl}
-            {/* {main ? ' M' : ' A'} */}
-          </span>
+          <span>{name}</span>{' '}
+          {main ? <span className="main-character">M</span> : ''}
         </div>
-        {/* 
+        {showRole ? <span>{role} </span> : ''}
+
         <span>{armorType} </span>
-        <span>{armorToken} </span> */}
+        <span>{armorToken} </span>
+        <span>{ilvl} </span>
       </div>
     )
   }

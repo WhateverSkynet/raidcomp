@@ -25,8 +25,8 @@ module.exports = {
       expiresIn: '1d',
     },
     blizzard: {
-      clientID: process.env.BLIZZARD_ID || 'abc',
-      clientSecret: process.env.BLIZZARD_SECRET || 'abc',
+      clientID: process.env.BLIZZARD_ID,
+      clientSecret: process.env.BLIZZARD_SECRET,
       successRedirect: '/',
       region: 'eu',
       scope: ['wow.profile'],
@@ -38,5 +38,5 @@ module.exports = {
       secure: false,
     },
   },
-  mongodb: 'mongodb://mongo-e9b6cd9b.40a488c2.svc.dockerapp.io:54614/raidcomp_server',
+  mongodb: 'mongodb://localhost:27017/raidcomp_server',
 }

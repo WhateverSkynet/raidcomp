@@ -2,7 +2,7 @@
 .raid {
   display: flex;
   flex-flow: row wrap;
-  flex-basis: 335px;
+  flex-basis: 500px;
 }
 
 .raid-container {
@@ -11,24 +11,4 @@
 
 .raid .raid-group {
   width: 50%;
-}
-
-.metrics {
-  margin: 0 2px;
-
-}
-.metrics table tr:nth-child(odd){
-  background-color: #eee;
-}
-
-.metrics table{
-  line-height: 1;
-  padding: 1px;
-}
-
-
-.metrics table td, .metrics table th{
-  border: 1px solid black;
-  text-indent: 2px;
-  padding: 0 1px;
 }
