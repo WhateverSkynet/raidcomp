@@ -47,14 +47,36 @@ const generateRaidSpotMap = (groups, characters) => {
 }
 
 const calcualteMetrics = characters => {
+  const mainItemLevels = characters
+    .filter(character => character.main)
+    .map(character => character.ilvl)
+  const altItemLevels = characters
+    .filter(character => !character.main)
+    .map(character => character.ilvl)
+  const totalItemLevels = characters.map(character => character.ilvl)
+
+  const average = [
+    Math.floor(
+      mainItemLevels.reduce((sum, ilvl, i) => sum + ilvl, 0) /
+        mainItemLevels.length,
+    ),
+    Math.floor(
+      altItemLevels.reduce((sum, ilvl, i) => sum + ilvl, 0) /
+        altItemLevels.length,
+    ),
+    Math.floor(
+      totalItemLevels.reduce((sum, ilvl, i) => sum + ilvl, 0) /
+        totalItemLevels.length,
+    ),
+  ]
   return characters.reduce(
-    (metrics, character) => {
+    (metrics, character, i) => {
       // [ main, alt]
-      const index = character.main ? 0 : 1
-      metrics.roles[character.role][index]++
-      metrics.roles[4][index]++
-      metrics.armorToken[character.armorToken][index]++
-      metrics.armorType[character.armorType][index]++
+      const metricIndex = character.main ? 0 : 1
+      metrics.roles[character.role][metricIndex]++
+      metrics.roles[4][metricIndex]++
+      metrics.armorToken[character.armorToken][metricIndex]++
+      metrics.armorType[character.armorType][metricIndex]++
       return metrics
     },
     {
@@ -75,6 +97,26 @@ const calcualteMetrics = characters => {
         [0, 0, 'Leather'],
         [0, 0, 'Mail'],
         [0, 0, 'Plate'],
+      ],
+      ilvl: [
+        {
+          name: 'min',
+          mains: Math.min(...mainItemLevels),
+          alts: Math.min(...altItemLevels),
+          total: Math.min(...totalItemLevels),
+        },
+        {
+          name: 'average',
+          mains: average[0],
+          alts: average[1],
+          total: average[2],
+        },
+        {
+          name: 'max',
+          mains: Math.max(...mainItemLevels),
+          alts: Math.max(...altItemLevels),
+          total: Math.max(...totalItemLevels),
+        },
       ],
     },
   )
@@ -194,59 +236,55 @@ class RaidComposition extends Component {
           <table>
             <thead>
               <tr>
-                <th>Role</th>
+                <th />
                 <th>Total</th>
                 <th>Mains</th>
                 <th>Alts</th>
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <th>Role</th>
+              </tr>
               {metrics.roles.map((metric, i) => (
                 <tr key={metrics.roles[i][2]}>
-                  <th>{metrics.roles[i][2]}</th>
-                  <th>{metrics.roles[i][0] + metrics.roles[i][1]}</th>
-                  <th>{metrics.roles[i][0]}</th>
-                  <th>{metrics.roles[i][1]}</th>
+                  <td>{metrics.roles[i][2]}</td>
+                  <td>{metrics.roles[i][0] + metrics.roles[i][1]}</td>
+                  <td>{metrics.roles[i][0]}</td>
+                  <td>{metrics.roles[i][1]}</td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-          <table>
-            <thead>
               <tr>
                 <th>Token</th>
-                <th>Total</th>
-                <th>Mains</th>
-                <th>Alts</th>
               </tr>
-            </thead>
-            <tbody>
               {metrics.armorToken.map((metric, i) => (
-                <tr key={metrics.roles[i][2]}>
-                  <th>{metrics.armorToken[i][2]}</th>
-                  <th>{metrics.armorToken[i][0] + metrics.armorToken[i][1]}</th>
-                  <th>{metrics.armorToken[i][0]}</th>
-                  <th>{metrics.armorToken[i][1]}</th>
+                <tr key={metrics.armorToken[i][2]}>
+                  <td>{metrics.armorToken[i][2]}</td>
+                  <td>{metrics.armorToken[i][0] + metrics.armorToken[i][1]}</td>
+                  <td>{metrics.armorToken[i][0]}</td>
+                  <td>{metrics.armorToken[i][1]}</td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-          <table>
-            <thead>
               <tr>
-                <th>Аrmor</th>
-                <th>Total</th>
-                <th>Mains</th>
-                <th>Alts</th>
+                <th>Armor Type</th>
               </tr>
-            </thead>
-            <tbody>
               {metrics.armorType.map((metric, i) => (
-                <tr key={metrics.roles[i][2]}>
-                  <th>{metrics.armorType[i][2]}</th>
-                  <th>{metrics.armorType[i][0] + metrics.armorType[i][1]}</th>
-                  <th>{metrics.armorType[i][0]}</th>
-                  <th>{metrics.armorType[i][1]}</th>
+                <tr key={metrics.armorType[i][2]}>
+                  <td>{metrics.armorType[i][2]}</td>
+                  <td>{metrics.armorType[i][0] + metrics.armorType[i][1]}</td>
+                  <td>{metrics.armorType[i][0]}</td>
+                  <td>{metrics.armorType[i][1]}</td>
+                </tr>
+              ))}
+              <tr>
+                <th>ilvl</th>
+              </tr>
+              {metrics.ilvl.map((metric, i) => (
+                <tr key={metrics.ilvl[i].name}>
+                  <td>{metrics.ilvl[i].name}</td>
+                  <td>{metrics.ilvl[i].total}</td>
+                  <td>{metrics.ilvl[i].mains}</td>
+                  <td>{metrics.ilvl[i].alts}</td>
                 </tr>
               ))}
             </tbody>
