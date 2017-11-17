@@ -287,6 +287,91 @@ class Planner extends Component {
       })
       didChange = true
     } else if (
+      destinationCompositionGroup.compositionId !==
+      sourceCompositionGroup.compositionId
+    ) {
+      const { index: sourceIndex } = result.source
+      const { index: targetIndex } = result.destination
+      if (targetIndex >= GROUP_SIZE) {
+        return
+      }
+      const sourceRaidIndex =
+        sourceCompositionGroup.group * GROUP_SIZE + sourceIndex
+      // We need to update the raid index after drop
+      const raidIndex =
+        destinationCompositionGroup.group * GROUP_SIZE + targetIndex
+      // console.log(sourceRaidIndex, raidIndex)
+      const movedCharacter1 = compositionCharacters.find(
+        raidMember =>
+          raidMember.compositionId === sourceCompositionGroup.compositionId &&
+          raidMember.raidIndex === sourceRaidIndex,
+      )
+      const movedCharacter2 = compositionCharacters.find(
+        raidMember =>
+          raidMember.compositionId ===
+            destinationCompositionGroup.compositionId &&
+          raidMember.raidIndex === raidIndex,
+      )
+      // console.log(movedCharacter1, movedCharacter2)
+      const raidMember1 = Object.assign({}, movedCharacter1, { raidIndex })
+      const raidMember2 = Object.assign({}, movedCharacter2, {
+        raidIndex: sourceRaidIndex,
+      })
+      const raidMembers = movedCharacter2
+        ? [raidMember1, raidMember2]
+        : [raidMember1]
+      // console.log(raidMember1, raidMember2)
+      const newCompositions = compositions.map(composition => {
+        if (composition.id === destinationCompositionGroup.compositionId) {
+          const members = [
+            ...(movedCharacter2
+              ? composition.members.filter(
+                  member => member.raidIndex !== sourceRaidIndex,
+                )
+              : composition.members),
+            raidMember1,
+          ]
+          return Object.assign({}, composition, { members })
+        } else if (composition.id === sourceCompositionGroup.compositionId) {
+          const members = [
+            ...composition.members.filter(
+              member => member.raidIndex !== sourceRaidIndex,
+            ),
+            ...(movedCharacter2 ? [raidMember2] : []),
+          ]
+          return Object.assign({}, composition, { members })
+        }
+        return composition
+      })
+      // console.log(raidMember2, raidMember1)
+
+      const newCompositionCharacters = [
+        ...compositionCharacters.filter(
+          raidMember =>
+            (raidMember.compositionId !==
+              sourceCompositionGroup.compositionId &&
+              raidMember.raidIndex !== sourceRaidIndex) ||
+            (raidMember.compositionId !==
+              destinationCompositionGroup.compositionId &&
+              raidMember.raidIndex !== raidIndex),
+        ),
+        ...raidMembers.map(raidMember =>
+          Object.assign(
+            {
+              compositionId: destinationCompositionGroup.compositionId,
+            },
+            raidMember,
+          ),
+        ),
+      ]
+
+      // console.log(newCompositions, newCompositionCharacters)
+      this.setState({
+        compositions: newCompositions,
+        compositionCharacters: newCompositionCharacters,
+      })
+      didChange = true
+    } else if (
       destinationCompositionGroup.compositionId ===
       sourceCompositionGroup.compositionId
     ) {
