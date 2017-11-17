@@ -1,4 +1,3 @@
-// const { authenticate } = require('feathers-authentication').hooks
 const transformHook = require('../../hooks/object-transformer')
 
 const populateCompositions = () => hook => {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
-import PlanList from './routes/PlanList'
+import PlanContainer from './routes/PlanContainer'
 import Planner from './components/Planner'
 
 import './App.css'
@@ -11,7 +11,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <Switch>
-          <Route exact path="/" component={PlanList} />
+          <Route exact path="/" component={PlanContainer} />
           <Route path="/plan/:id" component={Planner} />
         </Switch>
       </BrowserRouter>

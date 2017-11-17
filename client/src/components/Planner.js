@@ -16,24 +16,19 @@ const GROUP_SIZE = 5
  * @param {number} groupCount
  */
 const generateGroups = groupCount => {
-  const groups = Array.from({ length: groupCount }, (v, group) => group).map(
-    group => ({
-      id: v4(),
-      group,
-      members: Array.from({ length: GROUP_SIZE }, (v, partyIndex) => {
-        const raidIndex = group * GROUP_SIZE + partyIndex
-        return {
-          group,
-          partyIndex,
-          raidIndex,
-          // placeholder: true,
-          id: v4(),
-        }
-      }),
+  return Array.from({ length: groupCount }, (v, group) => group).map(group => ({
+    id: v4(),
+    group,
+    members: Array.from({ length: GROUP_SIZE }, (v, partyIndex) => {
+      const raidIndex = group * GROUP_SIZE + partyIndex
+      return {
+        group,
+        partyIndex,
+        raidIndex,
+        id: v4(),
+      }
     }),
-  )
-
-  return groups
+  }))
 }
 
 /**
