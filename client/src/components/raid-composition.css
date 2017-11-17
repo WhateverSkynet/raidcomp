@@ -16,8 +16,8 @@
 
 .metrics {
   margin: 0 2px;
-
 }
+
 .metrics table tr:nth-child(odd){
   background-color: #eee;
 }
