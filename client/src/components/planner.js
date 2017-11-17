@@ -11,13 +11,12 @@ import RaidComposition from './raid-composition'
 const GROUP_SIZE = 5
 /**
  *
- * @param {number} groupCount
  * @param {object[]} compositions
  */
-const generateCompositions = (groupCount, compositions) => {
+const generateCompositions = compositions => {
   return compositions.map(composition =>
     Object.assign({ id: v4() }, composition, {
-      groups: generateGroups(groupCount),
+      groups: generateGroups(composition.size),
     }),
   )
 }
@@ -81,6 +80,11 @@ const transformCompositions = compositions =>
     ),
   )
 
+const SIZE_OPTIONS = [
+  { value: 4, label: 'Mythic' },
+  { value: 6, label: 'Flex' },
+]
+
 class Planner extends Component {
   static defaultProps = {}
   constructor(props) {
@@ -112,7 +116,6 @@ class Planner extends Component {
       })
       .filter(c => c.role !== -1)
     const compositions = generateCompositions(
-      4,
       data.compositions.map(composition =>
         Object.assign({}, composition, {
           members: composition.members.map(member =>
@@ -513,6 +516,50 @@ class Planner extends Component {
                   groups={composition.groups}
                   characters={composition.members}
                 />
+                <select
+                  value={SIZE_OPTIONS.findIndex(
+                    option => option.value === composition.size,
+                  )}
+                  onChange={e => {
+                    const value = SIZE_OPTIONS[e.target.value].value
+                    if (value === composition.size) {
+                      return
+                    }
+                    planService.update(
+                      id,
+                      {
+                        compositions: transformCompositions(
+                          this.state.compositions.map(
+                            c =>
+                              c._id === composition._id
+                                ? Object.assign({}, c, {
+                                    size: value,
+                                    members: c.members.filter(
+                                      member =>
+                                        member.raidIndex < GROUP_SIZE * value,
+                                    ),
+                                  })
+                                : c,
+                          ),
+                        ),
+                      },
+                      {
+                        query: { $populate: 'roster' },
+                      },
+                    )
+                  }}
+                  onBlur={e => {}}
+                >
+                  {SIZE_OPTIONS.map((option, i) => (
+                    <option
+                      key={option.value}
+                      value={i}
+                      disabled={option.disabled}
+                    >
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
                 <button
                   onClick={() =>
                     planService.update(

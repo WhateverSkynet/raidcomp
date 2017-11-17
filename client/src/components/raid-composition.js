@@ -170,7 +170,7 @@ class RaidComposition extends Component {
     const { _metrics: metrics } = this
     return (
       <div className="raid-container">
-        <div className="raid" key="raid">
+        <div className="raid">
           {groups.map(group => (
             <Droppable
               key={group.id}
@@ -190,7 +190,7 @@ class RaidComposition extends Component {
             </Droppable>
           ))}
         </div>
-        <div className="metrics" key="metrics">
+        <div className="metrics">
           <table>
             <thead>
               <tr>

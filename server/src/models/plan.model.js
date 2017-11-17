@@ -27,6 +27,7 @@ module.exports = function(app) {
 
   const compositions = new Schema(
     {
+      size: { type: Number, required: true, default: 4 },
       members: { type: [raidMember] },
     },
     {
