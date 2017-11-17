@@ -3,6 +3,11 @@ services:
   - docker
 node_js:
   - 8
+addons:
+  sonarcloud:
+    organization: voicis-github
+    branches:
+      - master
 cache:
   directories:
     - client/node_modules
@@ -11,4 +16,5 @@ env:
   - BUILD_TARGET=client
   - BUILD_TARGET=server
 script:
+  - sonar-scanner
   - bash build/build.sh production $BUILD_TARGET
