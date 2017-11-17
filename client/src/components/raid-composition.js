@@ -212,34 +212,14 @@ class RaidComposition extends Component {
     const { _metrics: metrics } = this
     return (
       <div className="raid-container">
-        <div className="raid">
-          {groups.map(group => (
-            <Droppable
-              key={group.id}
-              className="raid-group"
-              droppableId={`droppable_${group.id}`}
-            >
-              {(provided, snapshot) => (
-                <div
-                  className="raid-group"
-                  ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
-                >
-                  {group.members.map(this._renderRaidMember)}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          ))}
-        </div>
         <div className="metrics">
           <table>
             <thead>
               <tr>
                 <th />
-                <th>Total</th>
-                <th>Mains</th>
-                <th>Alts</th>
+                <th>T</th>
+                <th>M</th>
+                <th>A</th>
               </tr>
             </thead>
             <tbody>
@@ -266,7 +246,7 @@ class RaidComposition extends Component {
                 </tr>
               ))}
               <tr>
-                <th>Armor Type</th>
+                <th>Armor</th>
               </tr>
               {metrics.armorType.map((metric, i) => (
                 <tr key={metrics.armorType[i][2]}>
@@ -289,6 +269,26 @@ class RaidComposition extends Component {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="raid">
+          {groups.map(group => (
+            <Droppable
+              key={group.id}
+              className="raid-group"
+              droppableId={`droppable_${group.id}`}
+            >
+              {(provided, snapshot) => (
+                <div
+                  className="raid-group"
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {group.members.map(this._renderRaidMember)}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ))}
         </div>
       </div>
     )
