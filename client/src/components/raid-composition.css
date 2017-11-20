@@ -28,8 +28,25 @@
 }
 
 
-.metrics table td, .metrics table th{
+.metrics table td{
   border: 1px solid black;
-  text-indent: 2px;
-  padding: 0 1px;
+  text-indent: 0.1em;
+  padding: 0 0.1em;
+}
+
+.mid
+{
+  text-align: center;
+}
+
+.metrics table th{
+  border: none;
+  padding: 0 0.3em;
+  background-color: white;
+  text-align: center;
+}
+
+.metrics table .subtitle{
+  text-align: left;
+  padding: 0.5em 0 0 0;
 }

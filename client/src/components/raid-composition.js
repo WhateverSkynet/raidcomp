@@ -224,47 +224,53 @@ class RaidComposition extends Component {
             </thead>
             <tbody>
               <tr>
-                <th>Role</th>
+                <th className="subtitle">Role</th>
               </tr>
               {metrics.roles.map((metric, i) => (
                 <tr key={metrics.roles[i][2]}>
                   <td>{metrics.roles[i][2]}</td>
-                  <td>{metrics.roles[i][0] + metrics.roles[i][1]}</td>
-                  <td>{metrics.roles[i][0]}</td>
-                  <td>{metrics.roles[i][1]}</td>
+                  <td className="mid">
+                    {metrics.roles[i][0] + metrics.roles[i][1]}
+                  </td>
+                  <td className="mid">{metrics.roles[i][0]}</td>
+                  <td className="mid">{metrics.roles[i][1]}</td>
                 </tr>
               ))}
               <tr>
-                <th>Token</th>
+                <th className="subtitle">Token</th>
               </tr>
               {metrics.armorToken.map((metric, i) => (
                 <tr key={metrics.armorToken[i][2]}>
                   <td>{metrics.armorToken[i][2]}</td>
-                  <td>{metrics.armorToken[i][0] + metrics.armorToken[i][1]}</td>
-                  <td>{metrics.armorToken[i][0]}</td>
-                  <td>{metrics.armorToken[i][1]}</td>
+                  <td className="mid">
+                    {metrics.armorToken[i][0] + metrics.armorToken[i][1]}
+                  </td>
+                  <td className="mid">{metrics.armorToken[i][0]}</td>
+                  <td className="mid">{metrics.armorToken[i][1]}</td>
                 </tr>
               ))}
               <tr>
-                <th>Armor</th>
+                <th className="subtitle">Armor</th>
               </tr>
               {metrics.armorType.map((metric, i) => (
                 <tr key={metrics.armorType[i][2]}>
                   <td>{metrics.armorType[i][2]}</td>
-                  <td>{metrics.armorType[i][0] + metrics.armorType[i][1]}</td>
-                  <td>{metrics.armorType[i][0]}</td>
-                  <td>{metrics.armorType[i][1]}</td>
+                  <td className="mid">
+                    {metrics.armorType[i][0] + metrics.armorType[i][1]}
+                  </td>
+                  <td className="mid">{metrics.armorType[i][0]}</td>
+                  <td className="mid">{metrics.armorType[i][1]}</td>
                 </tr>
               ))}
               <tr>
-                <th>ilvl</th>
+                <th className="subtitle">ilvl</th>
               </tr>
               {metrics.ilvl.map((metric, i) => (
                 <tr key={metrics.ilvl[i].name}>
                   <td>{metrics.ilvl[i].name}</td>
-                  <td>{metrics.ilvl[i].total}</td>
-                  <td>{metrics.ilvl[i].mains}</td>
-                  <td>{metrics.ilvl[i].alts}</td>
+                  <td className="mid">{metrics.ilvl[i].total}</td>
+                  <td className="mid">{metrics.ilvl[i].mains}</td>
+                  <td className="mid">{metrics.ilvl[i].alts}</td>
                 </tr>
               ))}
             </tbody>
