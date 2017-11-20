@@ -55,7 +55,7 @@ const generateRoleGroups = (compositionCharacters, characters, roles) => {
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? 'lightblue' : 'lightgrey',
   padding: grid,
-  width: 250,
+  width: 175,
 })
 
 class Roster extends Component {
