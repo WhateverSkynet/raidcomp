@@ -35,8 +35,6 @@ class Character extends Component {
       name,
       classId,
       role,
-      armorType,
-      armorToken,
       ilvl,
       showRole,
       main,
