@@ -142,6 +142,7 @@ class Roster extends Component {
                   armorType={armorType}
                   ilvl={ilvl}
                   main={main}
+                  realm={realm}
                 >
                   )
                   {name}

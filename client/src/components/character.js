@@ -40,6 +40,7 @@ class Character extends Component {
       ilvl,
       showRole,
       main,
+      realm,
     } = this.props
     return (
       <div
@@ -49,7 +50,6 @@ class Character extends Component {
           CLASS_NAMES[classId],
         ].join(' ')}
       >
-        {/* <img src={icon} alt="class" /> */}
         <div>
           {showRole ? (
             <span>
@@ -58,17 +58,18 @@ class Character extends Component {
           ) : (
             ''
           )}
-          <span>{name}</span>
-          <span className="right">
-            {ilvl}
-            {/* {main ? ' M' : ' A'} */}
+          <span>
+            <a
+              href={`https://worldofwarcraft.com/en-gb/character/${realm}/${
+                name
+              }`}
+              target="_blank"
+            >
+              {name}
+            </a>
           </span>
+          <span className="right">{ilvl}</span>
         </div>
-        {/* 
-
-        {main ? 'main-character' : 'character'}
-        <span>{armorType} </span>
-        <span>{armorToken} </span> */}
       </div>
     )
   }

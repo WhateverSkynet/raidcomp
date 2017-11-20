@@ -191,6 +191,7 @@ class RaidComposition extends Component {
                       armorToken={character.armorToken}
                       armorType={character.armorType}
                       main={character.main}
+                      realm={character.realm}
                     >
                       {character.name}
                     </Character>

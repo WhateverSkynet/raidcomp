@@ -8,4 +8,5 @@ export default {
   armorToken: PropTypes.number.isRequired,
   ilvl: PropTypes.number.isRequired,
   main: PropTypes.bool.isRequired,
+  realm: PropTypes.string.isRequired,
 }
