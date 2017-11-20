@@ -1,51 +1,55 @@
 
-.character .main-character {
+.right{
   float: right;
 }
+  
+.main-character {
+  border: 1px solid orange;
+}
 
-.character.hunter {
+.character.hunter, .main-character.hunter {
   background-color: var(--color-hunter);
 }
 
-.character.druid {
+.character.druid, .main-character.druid {
   background-color: var(--color-druid);
 }
 
-.character.mage {
+.character.mage, .main-character.mage {
   background-color: var(--color-mage);
 }
 
-.character.monk {
+.character.monk, .main-character.monk {
   background-color: var(--color-monk);
 }
 
-.character.paladin {
+.character.paladin, .main-character.paladin {
   background-color: var(--color-paladin);
 }
 
-.character.priest {
+.character.priest, .main-character.priest {
   background-color: var(--color-priest);
 }
 
-.character.rogue {
+.character.rogue, .main-character.rogue {
   background-color: var(--color-rogue);
 }
 
-.character.shaman {
+.character.shaman, .main-character.shaman {
   background-color: var(--color-shaman);
 }
 
-.character.warlock {
+.character.warlock, .main-character.warlock {
   background-color: var(--color-warlock);
 }
 
-.character.warrior {
+.character.warrior, .main-character.warrior {
   background-color: var(--color-warrior);
 }
 
-.character.death-knight {
+.character.death-knight, .main-character.death-knight {
   background-color: var(--color-death-knight);
 }
-.character.demon-hunter {
+.character.demon-hunter, .main-character.demon-hunter {
   background-color: var(--color-demon-hunter);
 }

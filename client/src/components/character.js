@@ -39,18 +39,23 @@ class Character extends Component {
     return (
       <div
         // className="character"
-        className={['character', CLASS_NAMES[classId]].join(' ')}
+        className={[
+          main ? 'main-character' : 'character',
+          CLASS_NAMES[classId],
+        ].join(' ')}
       >
         {/* <img src={icon} alt="class" /> */}
         <div>
           {showRole ? <span>{role} </span> : ''}
           <span>{name}</span>
-          <span className="main-character">
+          <span className="right">
             {ilvl}
             {/* {main ? ' M' : ' A'} */}
           </span>
         </div>
         {/* 
+
+        {main ? 'main-character' : 'character'}
         <span>{armorType} </span>
         <span>{armorToken} </span> */}
       </div>
