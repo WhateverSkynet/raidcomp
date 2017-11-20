@@ -3,6 +3,21 @@
 }
 
 .container{
-  width: 70%;
+  width: 67%;
   margin: auto;
+}
+
+.top{
+  
+}
+
+.header{
+  height: 100px;
+  margin: auto;
+  width: 65%;
+}
+
+.ph-text{
+  font-size:45px;
+  font-weight: bold;
 }

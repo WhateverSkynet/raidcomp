@@ -471,127 +471,137 @@ class Planner extends Component {
       compositionCharacters,
     } = this.state
     return (
-      <div className="container">
-      {/* This div doesnt need to be in container does it? */}
-        <div>
-          <button
-            onClick={() =>
-              planService.update(
-                id,
-                {
-                  compositions: [
-                    ...transformCompositions(this.state.compositions),
-                    {},
-                  ],
-                },
-                {
-                  query: { $populate: 'roster' },
-                },
-              )
-            }
-          >
-            Add
-          </button>
-          <button
-            onClick={() =>
-              planService.update(
-                id,
-                {
-                  syncWithGuild: true,
-                },
-                {
-                  query: { $populate: 'roster' },
-                },
-              )
-            }
-          >
-            Sync
-          </button>
+      <div>
+        <div className="header">
+          <span className="ph-text">Logo Here</span>
+          <div>
+            <span className="h2">Raid Planner Tool</span>
+          </div>
+          <div>
+            <span>name of current plan</span>
+          </div>
+          <div>
+            <button
+              onClick={() =>
+                planService.update(
+                  id,
+                  {
+                    compositions: [
+                      ...transformCompositions(this.state.compositions),
+                      {},
+                    ],
+                  },
+                  {
+                    query: { $populate: 'roster' },
+                  },
+                )
+              }
+            >
+              Add
+            </button>
+            <button
+              onClick={() =>
+                planService.update(
+                  id,
+                  {
+                    syncWithGuild: true,
+                  },
+                  {
+                    query: { $populate: 'roster' },
+                  },
+                )
+              }
+            >
+              Sync
+            </button>
+          </div>
         </div>
-        <DragDropContext onDragEnd={this.onDragEnd}>
-          <div className="column raid-comp">
-            {/* <div className="grid" /> */}
-            {compositions.map(composition => (
-              <div key={composition.id}>
-                <RaidComposition
-                  groups={composition.groups}
-                  characters={composition.members}
-                />
-                <select
-                  value={SIZE_OPTIONS.findIndex(
-                    option => option.value === composition.size,
-                  )}
-                  onChange={e => {
-                    const value = SIZE_OPTIONS[e.target.value].value
-                    if (value === composition.size) {
-                      return
-                    }
-                    planService.update(
-                      id,
-                      {
-                        compositions: transformCompositions(
-                          this.state.compositions.map(
-                            c =>
-                              c._id === composition._id
-                                ? Object.assign({}, c, {
-                                    size: value,
-                                    members: c.members.filter(
-                                      member =>
-                                        member.raidIndex < GROUP_SIZE * value,
-                                    ),
-                                  })
-                                : c,
+        <div className="container">
+          <DragDropContext onDragEnd={this.onDragEnd}>
+            <div className="column raid-comp">
+              {/* <div className="grid" /> */}
+              {compositions.map(composition => (
+                <div key={composition.id}>
+                  <RaidComposition
+                    groups={composition.groups}
+                    characters={composition.members}
+                  />
+                  <select
+                    value={SIZE_OPTIONS.findIndex(
+                      option => option.value === composition.size,
+                    )}
+                    onChange={e => {
+                      const value = SIZE_OPTIONS[e.target.value].value
+                      if (value === composition.size) {
+                        return
+                      }
+                      planService.update(
+                        id,
+                        {
+                          compositions: transformCompositions(
+                            this.state.compositions.map(
+                              c =>
+                                c._id === composition._id
+                                  ? Object.assign({}, c, {
+                                      size: value,
+                                      members: c.members.filter(
+                                        member =>
+                                          member.raidIndex < GROUP_SIZE * value,
+                                      ),
+                                    })
+                                  : c,
+                            ),
                           ),
-                        ),
-                      },
-                      {
-                        query: { $populate: 'roster' },
-                      },
-                    )
-                  }}
-                  onBlur={e => {}}
-                >
-                  {SIZE_OPTIONS.map((option, i) => (
-                    <option
-                      key={option.value}
-                      value={i}
-                      disabled={option.disabled}
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() =>
-                    planService.update(
-                      id,
-                      {
-                        compositions: transformCompositions(
-                          this.state.compositions,
-                        ).filter(x => x.id !== composition.id),
-                      },
-                      {
-                        query: { $populate: 'roster' },
-                      },
-                    )
-                  }
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
-          <div className="column roster">
-            <div className="filters" />
-            <Roster
-              className="grid"
-              groups={rosterGroups}
-              characters={rosterCharacters}
-              compositionCharacters={compositionCharacters}
-              onGroupUpdate={this.onRosterGroupUpdate}
-            />
-          </div>
-        </DragDropContext>
+                        },
+                        {
+                          query: { $populate: 'roster' },
+                        },
+                      )
+                    }}
+                    onBlur={e => {}}
+                  >
+                    {SIZE_OPTIONS.map((option, i) => (
+                      <option
+                        key={option.value}
+                        value={i}
+                        disabled={option.disabled}
+                      >
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() =>
+                      planService.update(
+                        id,
+                        {
+                          compositions: transformCompositions(
+                            this.state.compositions,
+                          ).filter(x => x.id !== composition.id),
+                        },
+                        {
+                          query: { $populate: 'roster' },
+                        },
+                      )
+                    }
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="column roster">
+              <div className="filters" />
+              <Roster
+                className="grid"
+                groups={rosterGroups}
+                characters={rosterCharacters}
+                compositionCharacters={compositionCharacters}
+                onGroupUpdate={this.onRosterGroupUpdate}
+              />
+            </div>
+          </DragDropContext>
+        </div>
       </div>
     )
   }
