@@ -53,3 +53,8 @@
 .character.demon-hunter, .main-character.demon-hunter {
   background-color: var(--color-demon-hunter);
 }
+
+.role-img{
+  height: 1em;
+  width: 1em;
+}

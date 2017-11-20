@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import CharacterType from './character.type'
-
+import TankIcon from '../assets/roles/tank.png'
+import HealerIcon from '../assets/roles/heal.png'
+import MeleeIcon from '../assets/roles/melee.png'
+import RangedIcon from '../assets/roles/ranged.png'
 import './character.css'
 
 const CLASS_NAMES = [
@@ -18,6 +21,8 @@ const CLASS_NAMES = [
   'druid',
   'demon-hunter',
 ]
+
+const RoleIcon = [TankIcon, HealerIcon, MeleeIcon, RangedIcon]
 
 class Character extends Component {
   static defaultProps = {
@@ -46,7 +51,13 @@ class Character extends Component {
       >
         {/* <img src={icon} alt="class" /> */}
         <div>
-          {showRole ? <span>{role} </span> : ''}
+          {showRole ? (
+            <span>
+              <img className="role-img" src={RoleIcon[role]} alt={role} />{' '}
+            </span>
+          ) : (
+            ''
+          )}
           <span>{name}</span>
           <span className="right">
             {ilvl}
