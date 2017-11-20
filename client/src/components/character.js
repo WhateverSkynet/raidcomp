@@ -43,7 +43,6 @@ class Character extends Component {
     } = this.props
     return (
       <div
-        // className="character"
         className={[
           main ? 'main-character' : 'character',
           CLASS_NAMES[classId],

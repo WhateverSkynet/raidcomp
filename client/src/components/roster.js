@@ -159,26 +159,49 @@ class Roster extends Component {
   render() {
     const { groups = [] } = this.props
     return (
-      <div className="roster">
-        {groups.map((role, i) => (
-          <Droppable
-            key={role.id}
-            droppableId={`droppable_${role.id}`}
-            className="character-group-container"
-          >
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
-              >
-                <div className="character-tile">
-                  {this._renderGroupCharacters(i)}
+      <div>
+        <div className="roster">
+          {groups.map((role, i) => (
+            <Droppable
+              key={role.id}
+              droppableId={`droppable_${role.id}`}
+              className="character-group-container"
+            >
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  <div className="character-tile">
+                    {this._renderGroupCharacters(i)}
+                  </div>
+                  {provided.placeholder}
                 </div>
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        ))}
+              )}
+            </Droppable>
+          ))}
+        </div>
+        <div className="roster">
+          {groups.map((role, i) => (
+            <Droppable
+              key={role.id}
+              droppableId={`droppable_${role.id}`}
+              className="character-group-container"
+            >
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  <div className="character-tile">
+                    {this._renderGroupCharacters(i)}
+                  </div>
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ))}
+        </div>
       </div>
     )
   }
