@@ -41,6 +41,7 @@ class Character extends Component {
       showRole,
       main,
       realm,
+      armory = `https://worldofwarcraft.com/en-gb/character/${realm}/${name}`,
     } = this.props
     return (
       <div
@@ -59,12 +60,7 @@ class Character extends Component {
             ''
           )}
           <span>
-            <a
-              href={`https://worldofwarcraft.com/en-gb/character/${realm}/${
-                name
-              }`}
-              target="_blank"
-            >
+            <a href={armory} target="_blank">
               {name}
             </a>
           </span>
