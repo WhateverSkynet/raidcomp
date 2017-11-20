@@ -472,6 +472,7 @@ class Planner extends Component {
     } = this.state
     return (
       <div className="container">
+      {/* This div doesnt need to be in container does it? */}
         <div>
           <button
             onClick={() =>
